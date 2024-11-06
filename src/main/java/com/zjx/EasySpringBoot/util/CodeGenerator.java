@@ -2,6 +2,8 @@ package com.zjx.EasySpringBoot.util;
 
 import com.zjx.EasySpringBoot.pojo.Field;
 import com.zjx.EasySpringBoot.pojo.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CodeGenerator {
-
+    private static final Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
     // SQL 语句
     private static final String SHOW_TABLES_SQL = "show table status;";
     private static final String SHOW_FIELDS_SQL = "show full fields from %s;";
@@ -28,14 +30,17 @@ public class CodeGenerator {
             while (resultSet.next()) {
                 Field field = new Field();
                 field.setFieldName(resultSet.getString("Field"));
+                logger.info(field.getFieldName());
                 field.setFieldType(resultSet.getString("Type"));
+                logger.info(field.getFieldType());
                 field.setFieldComment(resultSet.getString("Comment"));
+                logger.info(field.getFieldComment());
                 table.getFields().add(field);
             }
             resultSet.close();
             stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
     }
 
@@ -58,7 +63,7 @@ public class CodeGenerator {
             stmt.close();
             connection.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
     }
 
