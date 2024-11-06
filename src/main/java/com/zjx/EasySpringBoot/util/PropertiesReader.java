@@ -1,4 +1,4 @@
-package com.zjx.EasySpringBoot;
+package com.zjx.EasySpringBoot.util;
 
 import java.io.InputStream;
 import java.util.Properties;
