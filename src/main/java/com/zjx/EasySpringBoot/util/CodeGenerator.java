@@ -1,8 +1,7 @@
-package com.zjx.EasySpringBoot;
+package com.zjx.EasySpringBoot.util;
 
 import com.zjx.EasySpringBoot.pojo.Field;
 import com.zjx.EasySpringBoot.pojo.Table;
-import com.zjx.EasySpringBoot.util.PropertiesReader;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,6 +32,8 @@ public class CodeGenerator {
                 field.setFieldComment(resultSet.getString("Comment"));
                 table.getFields().add(field);
             }
+            resultSet.close();
+            stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
