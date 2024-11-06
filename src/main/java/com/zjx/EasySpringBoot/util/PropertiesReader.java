@@ -11,15 +11,6 @@ public class PropertiesReader {
     // 存储配置信息
     private static final Properties properties;
 
-    /**
-     * 获取配置
-     * @param key
-     * @return
-     */
-    public static String getSetting(String key) {
-        return properties.getProperty(key);
-    }
-
     static {
         properties = new Properties();
         try {
@@ -28,6 +19,15 @@ public class PropertiesReader {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取配置
+     * @param key
+     * @return
+     */
+    public static String getSetting(String key) {
+        return properties.getProperty(key);
     }
 
 }

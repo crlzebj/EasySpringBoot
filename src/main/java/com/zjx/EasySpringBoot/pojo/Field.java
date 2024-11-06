@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Field {
-    private static String fieldName;
-    private static String fieldType;
-    private static String fieldComment;
+    private String fieldName;
+    private String fieldType;
+    private String fieldComment;
 }

@@ -11,6 +11,13 @@ public class FieldToPojoUtil {
     // 存储 Mysql 数据类型和 Java 数据类型的对应关系
     private static final Map<String, String> map = new HashMap<String, String>();
 
+    static {
+        map.put("int", "Integer");
+        map.put("bigint", "Long");
+        map.put("varchar", "String");
+        map.put("datetime", "Date");
+    }
+
     /**
      * 将表名转换为 Entity 类名
      * @param tableName
@@ -61,13 +68,6 @@ public class FieldToPojoUtil {
      */
     public static String fieldTypeToJavaType(String filedType) {
         return map.get(filedType);
-    }
-
-    static {
-        map.put("int", "Integer");
-        map.put("bigint", "Long");
-        map.put("varchar", "String");
-        map.put("datetime", "Date");
     }
 
 }
