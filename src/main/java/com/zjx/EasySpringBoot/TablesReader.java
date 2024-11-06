@@ -16,7 +16,6 @@ public class TablesReader {
     private static Set<Table> tableSet = new HashSet<Table>();
 
     private static void setTable(String tableName) {
-
     }
 
     static {
