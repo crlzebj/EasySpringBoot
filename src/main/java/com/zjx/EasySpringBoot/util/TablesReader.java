@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class TablesReader {
     private static final Logger logger = LoggerFactory.getLogger(TablesReader.class);
+
     // SQL 语句
     private static final String SHOW_TABLES_SQL = "show table status;";
     private static final String SHOW_FIELDS_SQL = "show full fields from %s;";
@@ -67,4 +68,11 @@ public class TablesReader {
         }
     }
 
+    /**
+     * 获取表集合
+     * @return
+     */
+    public static Set<Table> getTableSet() {
+        return tableSet;
+    }
 }

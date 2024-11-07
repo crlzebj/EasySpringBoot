@@ -7,7 +7,6 @@ import java.util.Map;
  * 字符串转换工具
  */
 public class FieldToPojoUtil {
-
     // 存储 Mysql 数据类型和 Java 数据类型的对应关系
     private static final Map<String, String> map = new HashMap<String, String>();
 
@@ -69,5 +68,4 @@ public class FieldToPojoUtil {
     public static String fieldTypeToJavaType(String filedType) {
         return map.get(filedType);
     }
-
 }
