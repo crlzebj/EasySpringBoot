@@ -21,9 +21,9 @@ public class ProjectGenerator {
     static {
         PROJECT_PATH = PropertiesReader.getSetting("project.path");
         PROJECT_NAME = PropertiesReader.getSetting("project.name");
-        MAIN_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + PropertiesReader.getSetting("main.java.path");
-        MAIN_RESOURCES_PATH = PROJECT_PATH + PROJECT_NAME + PropertiesReader.getSetting("main.resources.path");
-        TEST_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + PropertiesReader.getSetting("test.java.path");
+        MAIN_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + "/src/main/java/";
+        MAIN_RESOURCES_PATH = PROJECT_PATH + PROJECT_NAME + "/src/main/resource/";
+        TEST_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + "/src/test/java/";
         PACKAGE_PATH = MAIN_JAVA_PATH + PropertiesReader.getSetting("package.prefix").replace(".", "/") + "/" + PROJECT_NAME;
     }
 
