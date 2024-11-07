@@ -12,8 +12,8 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CodeGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
+public class TablesReader {
+    private static final Logger logger = LoggerFactory.getLogger(TablesReader.class);
     // SQL 语句
     private static final String SHOW_TABLES_SQL = "show table status;";
     private static final String SHOW_FIELDS_SQL = "show full fields from %s;";
@@ -66,7 +66,5 @@ public class CodeGenerator {
             logger.info(e.getMessage());
         }
     }
-
-    public static void generateController() {}
 
 }
