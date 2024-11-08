@@ -9,43 +9,42 @@ import java.io.*;
 public class ProjectGenerator {
     private static final Logger logger = LoggerFactory.getLogger(ProjectGenerator.class);
 
-    // 项目所在目录
-    private static final String PROJECT_PATH;
-    // 项目名
-    private static final String PROJECT_NAME;
-    private static final String MAIN_JAVA_PATH;
+    // pom.xml 生成路径
+    private static final String POM_PATH;
+    // Entity 生成路径
+    private static final String ENTITY_PATH;
+    // DTO 生成路径
+    private static final String DTO_PATH;
     private static final String MAIN_RESOURCES_PATH;
     private static final String TEST_JAVA_PATH;
-    private static final String PACKAGE_PATH;
 
     static {
-        PROJECT_PATH = PropertiesReader.getSetting("project.path");
-        PROJECT_NAME = PropertiesReader.getSetting("project.name");
-        MAIN_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + "/src/main/java/";
-        MAIN_RESOURCES_PATH = PROJECT_PATH + PROJECT_NAME + "/src/main/resource/";
-        TEST_JAVA_PATH = PROJECT_PATH + PROJECT_NAME + "/src/test/java/";
-        PACKAGE_PATH = MAIN_JAVA_PATH + PropertiesReader.getSetting("package.prefix").replace(".", "/") + "/" + PROJECT_NAME;
+        POM_PATH = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name");
+        ENTITY_PATH = POM_PATH + "/src/main/java/" +
+                      PropertiesReader.getSetting("package.prefix").replace(".", "/") + "/" +
+                      PropertiesReader.getSetting("project.name") + "/pojo/entity";
+        DTO_PATH = ENTITY_PATH.replace("/entity", "/dto");
+        MAIN_RESOURCES_PATH = POM_PATH + "/src/main/resource";
+        TEST_JAVA_PATH = POM_PATH + "/src/test/java";
     }
 
     /**
      * 生成项目目录
      */
     public static void generateDirectory() {
-        // 创建项目根目录
-        File file = new File(PROJECT_PATH + PROJECT_NAME);
-        if (file.exists() || file.mkdir()) {
-            logger.info("项目根目录创建成功！");
+        // 创建 pojo 目录
+        File file = new File(ENTITY_PATH);
+        if (file.exists() || file.mkdirs()) {
+            logger.info("entity 目录创建成功!");
         } else {
-            logger.info("项目根目录创建失败");
+            logger.info("entity 目录创建失败");
             return;
         }
-
-        // 创建 main/java 目录
-        file = new File(MAIN_JAVA_PATH);
+        file = new File(DTO_PATH);
         if (file.exists() || file.mkdirs()) {
-            logger.info("main/java 目录创建成功!");
+            logger.info("dto 目录创建成功!");
         } else {
-            logger.info("main/java 目录创建失败");
+            logger.info("dto 目录创建失败");
             return;
         }
 
@@ -64,15 +63,6 @@ public class ProjectGenerator {
             logger.info("test/java 目录创建成功!");
         } else {
             logger.info("test/java 目录创建失败");
-            return;
-        }
-
-        // 创建包
-        file = new File(PACKAGE_PATH);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("包创建成功!");
-        } else {
-            logger.info("包创建失败");
         }
     }
 
@@ -80,7 +70,7 @@ public class ProjectGenerator {
      * 生成 pom.xml 文件
      */
     public static void generatePom() {
-        File file = new File(PROJECT_PATH + PROJECT_NAME + "/pom.xml");
+        File file = new File(POM_PATH + "/pom.xml");
         if(file.exists()){
             logger.info("pom.xml 文件已存在");
             return;
@@ -89,6 +79,7 @@ public class ProjectGenerator {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             writer.flush();
+            writer.close();
             logger.info("pom.xml 生成成功！");
         } catch (Exception e) {
             logger.error(e.getMessage());

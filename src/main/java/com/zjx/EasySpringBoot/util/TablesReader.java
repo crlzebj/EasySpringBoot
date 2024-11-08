@@ -31,11 +31,8 @@ public class TablesReader {
             while (resultSet.next()) {
                 Field field = new Field();
                 field.setFieldName(resultSet.getString("Field"));
-                logger.info(field.getFieldName());
                 field.setFieldType(resultSet.getString("Type"));
-                logger.info(field.getFieldType());
                 field.setFieldComment(resultSet.getString("Comment"));
-                logger.info(field.getFieldComment());
                 table.getFields().add(field);
             }
             resultSet.close();

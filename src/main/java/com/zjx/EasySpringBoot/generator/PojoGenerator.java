@@ -1,19 +1,56 @@
 package com.zjx.EasySpringBoot.generator;
 
+import com.zjx.EasySpringBoot.pojo.Field;
 import com.zjx.EasySpringBoot.pojo.Table;
+import com.zjx.EasySpringBoot.util.FieldToPojoUtil;
 import com.zjx.EasySpringBoot.util.PropertiesReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+
 public class PojoGenerator {
     private static final Logger logger = LoggerFactory.getLogger(PojoGenerator.class);
+    private static final String ENTITY_PATH;
+    private static final String DTO_PATH;
+
+    static {
+        ENTITY_PATH = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name") +
+                "/src/main/java/" + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
+                "/" + PropertiesReader.getSetting("project.name") + "/pojo/entity";
+        DTO_PATH = ENTITY_PATH.replace("/entity", "/dto");
+    }
 
     /**
      * 根据表生成对应实体类
      * @param table
      */
     public static void generateEntity(Table table) {
-
+        File file = new File(ENTITY_PATH + "/" + FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
+        if (file.exists()) {
+            logger.info("{} 文件已存在", file.getAbsolutePath());
+            return;
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write("@Data");
+            writer.newLine();
+            writer.write("public class " + FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + " {");
+            writer.newLine();
+            for(int i = 0; i < table.getFields().size(); i++) {
+                Field field = table.getFields().get(i);
+                writer.write("    private " + FieldToPojoUtil.fieldTypeToJavaType(field.getFieldType()) +
+                             " " + FieldToPojoUtil.fieldNameToJavaName(field.getFieldName()) + ";");
+                writer.newLine();
+            }
+            writer.write("}");
+            writer.newLine();
+            writer.flush();
+            writer.close();
+            logger.info("{} 文件生成成功", file.getAbsolutePath());
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**

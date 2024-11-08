@@ -11,12 +11,11 @@ public class Application {
     public static void main(String[] args) {
         ProjectGenerator.generateDirectory();
         ProjectGenerator.generatePom();
-        /*
         Set<Table> tableSet = TablesReader.getTableSet();
         for (Table table : tableSet) {
             PojoGenerator.generateEntity(table);
-            PojoGenerator.generateDTO(table);
+            break;
+            // PojoGenerator.generateDTO(table);
         }
-         */
     }
 }
