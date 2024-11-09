@@ -9,13 +9,11 @@ import java.util.Set;
 
 public class Application {
     public static void main(String[] args) {
-        ProjectGenerator.generateDirectory();
-        ProjectGenerator.generatePom();
+        ProjectGenerator.generateProject();
         Set<Table> tableSet = TablesReader.getTableSet();
         for (Table table : tableSet) {
-            PojoGenerator.generateEntity(table);
-            break;
-            // PojoGenerator.generateDTO(table);
+            // PojoGenerator.generateEntity(table);
+            PojoGenerator.generateDTO(table);
         }
     }
 }

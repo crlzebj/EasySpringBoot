@@ -11,10 +11,12 @@ public class FieldToPojoUtil {
     private static final Map<String, String> map = new HashMap<String, String>();
 
     static {
+        map.put("tinyint", "Integer");
         map.put("int", "Integer");
         map.put("bigint", "Long");
+        map.put("decimal", "BigDecimal");
         map.put("varchar", "String");
-        map.put("datetime", "Date");
+        map.put("datetime", "LocalDateTime");
     }
 
     /**
@@ -66,6 +68,10 @@ public class FieldToPojoUtil {
      * @return
      */
     public static String fieldTypeToJavaType(String filedType) {
+        int idx = filedType.indexOf("(");
+        if (idx != -1) {
+            filedType = filedType.substring(0, idx);
+        }
         return map.get(filedType);
     }
 }

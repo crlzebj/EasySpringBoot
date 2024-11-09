@@ -85,4 +85,12 @@ public class ProjectGenerator {
             logger.error(e.getMessage());
         }
     }
+
+    /**
+     * 生成基础 SpringBoot 项目
+     */
+    public static void generateProject() {
+        generateDirectory();
+        generatePom();
+    }
 }

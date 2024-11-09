@@ -34,6 +34,12 @@ public class TablesReader {
                 field.setFieldType(resultSet.getString("Type"));
                 field.setFieldComment(resultSet.getString("Comment"));
                 table.getFields().add(field);
+                if(field.getFieldType().contains("decimal")) {
+                    table.setHasDecimalType(true);
+                }
+                if(field.getFieldType().equals("datetime")) {
+                    table.setHasDateTimeType(true);
+                }
             }
             resultSet.close();
             stmt.close();
