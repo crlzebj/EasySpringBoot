@@ -57,6 +57,8 @@ public class PojoGenerator {
             // 类注释
             writer.write("/**");
             writer.newLine();
+            writer.write(" * @author " + PropertiesReader.getSetting("project.author"));
+            writer.newLine();
             writer.write(" * " + table.getTableComment());
             writer.newLine();
             writer.write(" */");
