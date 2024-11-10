@@ -18,6 +18,9 @@ public class ProjectGenerator {
     private static final String MAIN_RESOURCES_PATH;
     private static final String TEST_JAVA_PATH;
 
+    // 初始 pom.xml 文件
+    private static final String POM_CONTENT;
+
     static {
         POM_PATH = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name");
         ENTITY_PATH = POM_PATH + "/src/main/java/" +
@@ -26,6 +29,44 @@ public class ProjectGenerator {
         DTO_PATH = ENTITY_PATH.replace("/entity", "/dto");
         MAIN_RESOURCES_PATH = POM_PATH + "/src/main/resource";
         TEST_JAVA_PATH = POM_PATH + "/src/test/java";
+
+        POM_CONTENT = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                    <modelVersion>4.0.0</modelVersion>
+                
+                    <groupId>%s</groupId>
+                    <artifactId>%s</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                
+                    <properties>
+                        <maven.compiler.source>17</maven.compiler.source>
+                        <maven.compiler.target>17</maven.compiler.target>
+                        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                        <lombok.version>1.18.26</lombok.version>
+                        <mysql.version>8.0.30</mysql.version>
+                    </properties>
+                
+                    <dependencies>
+                        <!-- lombok -->
+                        <dependency>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </dependency>
+                
+                        <!-- mysql -->
+                        <dependency>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                            <version>${mysql.version}</version>
+                        </dependency>
+                    </dependencies>
+                
+                </project>
+                """;
     }
 
     /**
@@ -77,7 +118,8 @@ public class ProjectGenerator {
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            String pomContent = POM_CONTENT.formatted(PropertiesReader.getSetting("package.prefix"), PropertiesReader.getSetting("project.name"));
+            writer.write(pomContent);
             writer.flush();
             writer.close();
             logger.info("pom.xml 生成成功！");
