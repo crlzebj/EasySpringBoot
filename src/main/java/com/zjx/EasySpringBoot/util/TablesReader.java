@@ -5,10 +5,8 @@ import com.zjx.EasySpringBoot.pojo.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +21,43 @@ public class TablesReader {
     // 存储所有的表信息
     private static final Set<Table> tableSet = new HashSet<Table>();
 
-    private static void parseTable(Table table, Connection connection) {
+    /**
+     * 解析表索引
+     * @param table
+     * @param connection
+     */
+    private static void readIndexesOfTable(Table table, Connection connection) {
+        String sql = String.format(SHOW_INDEX_SQL, table.getTableName());
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                int isUnique = resultSet.getInt("Non_unique");
+                if (isUnique == 1) {
+                    continue;
+                }
+                String indexName = resultSet.getString("Key_name");
+                String fieldName = resultSet.getString("Column_name");
+                if (!table.getIndexes().containsKey(indexName)) {
+                    table.getIndexes().put(indexName, new ArrayList<Field>());
+                }
+                for(Field field : table.getFields()) {
+                    if(field.getFieldName().equals(fieldName)) {
+                        table.getIndexes().get(indexName).add(field);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 解析表
+     * @param table
+     * @param connection
+     */
+    private static void readTable(Table table, Connection connection) {
         String sql = String.format(SHOW_FIELDS_SQL, table.getTableName());
         try {
             Statement stmt = connection.createStatement();
@@ -41,6 +75,7 @@ public class TablesReader {
                     table.setHasDateTimeType(true);
                 }
             }
+            readIndexesOfTable(table, connection);
             resultSet.close();
             stmt.close();
         } catch (Exception e) {
@@ -60,7 +95,7 @@ public class TablesReader {
                 Table table = new Table();
                 table.setTableName(resultSet.getString("Name"));
                 table.setTableComment(resultSet.getString("Comment"));
-                parseTable(table, connection);
+                readTable(table, connection);
                 tableSet.add(table);
             }
             resultSet.close();
