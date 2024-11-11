@@ -16,7 +16,6 @@ public class Application {
         Set<Table> tableSet = TablesReader.getTableSet();
         for (Table table : tableSet) {
             PojoGenerator.generateEntity(table);
-            PojoGenerator.generateDTO(table);
         }
     }
 }
