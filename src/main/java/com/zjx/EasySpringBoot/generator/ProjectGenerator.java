@@ -10,28 +10,11 @@ import java.io.*;
 public class ProjectGenerator {
     private static final Logger logger = LoggerFactory.getLogger(ProjectGenerator.class);
 
-    // pom.xml 生成路径
-    private static final String POM_PATH;
-    // Entity 生成路径
-    private static final String ENTITY_PATH;
-    // DTO 生成路径
-    private static final String DTO_PATH;
-    private static final String MAIN_RESOURCES_PATH;
-    private static final String TEST_JAVA_PATH;
-
-    // 初始 pom.xml 文件
-    private static final String POM_CONTENT;
+    // pom.xml文件模板
+    private static final String POM_TEMPLATE;
 
     static {
-        POM_PATH = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name");
-        ENTITY_PATH = POM_PATH + "/src/main/java/" +
-                      PropertiesReader.getSetting("package.prefix").replace(".", "/") + "/" +
-                      PropertiesReader.getSetting("project.name") + "/pojo/entity";
-        DTO_PATH = ENTITY_PATH.replace("/entity", "/dto");
-        MAIN_RESOURCES_PATH = POM_PATH + "/src/main/resources";
-        TEST_JAVA_PATH = POM_PATH + "/src/test/java";
-
-        POM_CONTENT = """
+        POM_TEMPLATE = """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -74,22 +57,30 @@ public class ProjectGenerator {
      * 生成项目目录
      */
     public static void generateDirectory() {
-        // 创建 pojo 目录
-        File file = new File(ENTITY_PATH);
+        // 创建pojo目录
+        File file = new File(PathConstant.POJO + "entity/");
         if (file.exists() || file.mkdirs()) {
             logger.info("entity 目录创建成功!");
         } else {
             logger.info("entity 目录创建失败");
             return;
         }
-        file = new File(DTO_PATH);
+        file = new File(PathConstant.POJO + "dto/");
         if (file.exists() || file.mkdirs()) {
             logger.info("dto 目录创建成功!");
         } else {
             logger.info("dto 目录创建失败");
             return;
         }
+        file = new File(PathConstant.POJO + "vo/");
+        if (file.exists() || file.mkdirs()) {
+            logger.info("vo 目录创建成功!");
+        } else {
+            logger.info("vo 目录创建失败");
+            return;
+        }
 
+        // 创建mapper目录
         file = new File(PathConstant.MAPPER_INTERFACE);
         if (file.exists() || file.mkdirs()) {
             logger.info("mapper 目录创建成功!");
@@ -98,45 +89,54 @@ public class ProjectGenerator {
             return;
         }
 
-        // 创建 main/resources 目录
-        file = new File(MAIN_RESOURCES_PATH);
+        // 创建service目录
+        file = new File(PathConstant.SERVICE);
         if (file.exists() || file.mkdirs()) {
-            logger.info("main/resources 目录创建成功!");
+            logger.info("service 目录创建成功!");
         } else {
-            logger.info("main/resources 目录创建失败");
+            logger.info("service 目录创建失败");
             return;
         }
 
-        // 创建 mapper xml 目录
+        // 创建controller目录
+        file = new File(PathConstant.CONTROLLER);
+        if (file.exists() || file.mkdirs()) {
+            logger.info("controller 目录创建成功!");
+        } else {
+            logger.info("controller 目录创建失败");
+            return;
+        }
+
+        // 创建resources目录
+        file = new File(PathConstant.MAIN_RESOURCE);
+        if (file.exists() || file.mkdirs()) {
+            logger.info("resources 目录创建成功!");
+        } else {
+            logger.info("resources 目录创建失败");
+            return;
+        }
+
+        // 创建mapper xml目录
         file = new File(PathConstant.MAPPER_XML);
         if (file.exists() || file.mkdirs()) {
             logger.info("mapper xml 目录创建成功!");
         } else {
             logger.info("mapper xml 目录创建失败");
-            return;
-        }
-
-        // 创建 test/java 目录
-        file = new File(TEST_JAVA_PATH);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("test/java 目录创建成功!");
-        } else {
-            logger.info("test/java 目录创建失败");
         }
     }
 
     /**
-     * 生成 pom.xml 文件
+     * 生成pom.xml文件
      */
     public static void generatePom() {
-        File file = new File(POM_PATH + "/pom.xml");
+        File file = new File(PathConstant.PROJECT_ROOT + "pom.xml");
         if(file.exists()){
             logger.info("pom.xml 文件已存在");
             return;
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            String pomContent = POM_CONTENT.formatted(PropertiesReader.getSetting("package.prefix"), PropertiesReader.getSetting("project.name"));
+            String pomContent = POM_TEMPLATE.formatted(PropertiesReader.getSetting("package.prefix"), PropertiesReader.getSetting("project.name"));
             writer.write(pomContent);
             writer.flush();
             writer.close();
@@ -147,7 +147,7 @@ public class ProjectGenerator {
     }
 
     /**
-     * 生成基础 SpringBoot 项目
+     * 生成基础SpringBoot项目
      */
     public static void generateProject() {
         generateDirectory();

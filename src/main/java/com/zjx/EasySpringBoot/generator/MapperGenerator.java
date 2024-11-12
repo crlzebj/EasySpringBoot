@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class MapperGenerator {
     private static final Logger logger = LoggerFactory.getLogger(MapperGenerator.class);

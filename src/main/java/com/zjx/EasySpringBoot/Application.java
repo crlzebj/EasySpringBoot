@@ -17,7 +17,7 @@ public class Application {
         ProjectGenerator.generateProject();
         Set<Table> tableSet = TablesReader.getTableSet();
         for (Table table : tableSet) {
-            // PojoGenerator.generateEntity(table);
+            PojoGenerator.generateEntity(table);
             MapperGenerator.generateXml(table);
             MapperGenerator.generateInterface(table);
         }

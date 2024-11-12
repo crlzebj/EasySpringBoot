@@ -1,5 +1,6 @@
 package com.zjx.EasySpringBoot.generator;
 
+import com.zjx.EasySpringBoot.constant.PathConstant;
 import com.zjx.EasySpringBoot.pojo.Field;
 import com.zjx.EasySpringBoot.pojo.Table;
 import com.zjx.EasySpringBoot.util.FieldToPojoUtil;
@@ -8,23 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Path;
 
 public class PojoGenerator {
     private static final Logger logger = LoggerFactory.getLogger(PojoGenerator.class);
-    private static final String ENTITY_PATH;
-
-    static {
-        ENTITY_PATH = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name") +
-                "/src/main/java/" + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                "/" + PropertiesReader.getSetting("project.name") + "/pojo/entity";
-    }
 
     /**
      * 根据表生成对应实体类
      * @param table
      */
     public static void generateEntity(Table table) {
-        File file = new File(ENTITY_PATH + "/" + FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
+        File file = new File(PathConstant.POJO + "/entity/", FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
         if (file.exists()) {
             logger.info("{} 文件已存在", FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
             return;
