@@ -1,5 +1,7 @@
 package com.zjx.EasySpringBoot;
 
+import com.zjx.EasySpringBoot.constant.PathConstant;
+import com.zjx.EasySpringBoot.generator.MapperGenerator;
 import com.zjx.EasySpringBoot.generator.PojoGenerator;
 import com.zjx.EasySpringBoot.generator.ProjectGenerator;
 import com.zjx.EasySpringBoot.pojo.Table;
@@ -15,7 +17,9 @@ public class Application {
         ProjectGenerator.generateProject();
         Set<Table> tableSet = TablesReader.getTableSet();
         for (Table table : tableSet) {
-            PojoGenerator.generateEntity(table);
+            // PojoGenerator.generateEntity(table);
+            MapperGenerator.generateXml(table);
+            MapperGenerator.generateInterface(table);
         }
     }
 }

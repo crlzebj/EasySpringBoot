@@ -1,5 +1,6 @@
 package com.zjx.EasySpringBoot.generator;
 
+import com.zjx.EasySpringBoot.constant.PathConstant;
 import com.zjx.EasySpringBoot.util.PropertiesReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class ProjectGenerator {
                       PropertiesReader.getSetting("package.prefix").replace(".", "/") + "/" +
                       PropertiesReader.getSetting("project.name") + "/pojo/entity";
         DTO_PATH = ENTITY_PATH.replace("/entity", "/dto");
-        MAIN_RESOURCES_PATH = POM_PATH + "/src/main/resource";
+        MAIN_RESOURCES_PATH = POM_PATH + "/src/main/resources";
         TEST_JAVA_PATH = POM_PATH + "/src/test/java";
 
         POM_CONTENT = """
@@ -89,12 +90,29 @@ public class ProjectGenerator {
             return;
         }
 
+        file = new File(PathConstant.MAPPER_INTERFACE);
+        if (file.exists() || file.mkdirs()) {
+            logger.info("mapper 目录创建成功!");
+        } else {
+            logger.info("mapper 目录创建失败");
+            return;
+        }
+
         // 创建 main/resources 目录
         file = new File(MAIN_RESOURCES_PATH);
         if (file.exists() || file.mkdirs()) {
             logger.info("main/resources 目录创建成功!");
         } else {
             logger.info("main/resources 目录创建失败");
+            return;
+        }
+
+        // 创建 mapper xml 目录
+        file = new File(PathConstant.MAPPER_XML);
+        if (file.exists() || file.mkdirs()) {
+            logger.info("mapper xml 目录创建成功!");
+        } else {
+            logger.info("mapper xml 目录创建失败");
             return;
         }
 
