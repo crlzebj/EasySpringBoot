@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MapperGenerator {
     private static final Logger logger = LoggerFactory.getLogger(MapperGenerator.class);
@@ -42,7 +43,7 @@ public class MapperGenerator {
             List<Field> fields = table.getFields();
             StringBuilder builder = new StringBuilder();
 
-            // insert方法
+            // insert
             builder.append("\t<insert id=\"insert").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
                     .append("\">\n");
             builder.append("\t\tinsert into ").append(table.getTableName()).append(" values (");
@@ -56,19 +57,80 @@ public class MapperGenerator {
                 }
             }
 
-            // select方法
+            // select
             builder.append("\t<select id=\"select").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
                     .append("\" returnType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
                     .append(FieldToPojoUtil.tableNameToEntityName(table.getTableName())).append("\">\n");
             builder.append("\t\tselect * from ").append(table.getTableName()).append(";\n")
                     .append("\t</select>\n\n");
+
+            // 索引对应查询
+            Set<Map.Entry<String, List<Field>>> indexes = table.getIndexes().entrySet();
+            for (Map.Entry<String, List<Field>> index : indexes) {
+                List<Field> indexFields = index.getValue();
+
+                // updateBy
+                builder.append("\t<update id=\"update").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
+                        .append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount > 0) {
+                        builder.append("And");
+                    }
+                    builder.append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                            .substring(0, 1).toUpperCase() +
+                            FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                                    .substring(1));
+                }
+                builder.append("\">\n");
+                builder.append("\t\tupdate ").append(table.getTableName()).append(" set ");
+                for (int fieldIdxCount = 0; fieldIdxCount < fields.size(); fieldIdxCount++) {
+                    builder.append(fields.get(fieldIdxCount).getFieldName()).append("=#{")
+                            .append(FieldToPojoUtil.fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName()))
+                            .append("}");
+                    if (fieldIdxCount < fields.size() - 1) {
+                       builder.append(",");
+                    } else {
+                        builder.append(";\n\t</update>\n\n");
+                    }
+                }
+
+                // deleteBy
+                builder.append("\t<delete id=\"delete").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
+                        .append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount > 0) {
+                        builder.append("And");
+                    }
+                    builder.append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                            .substring(0, 1).toUpperCase() +
+                            FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                                    .substring(1));
+                }
+                builder.append("\">\n");
+                builder.append("\t\tdelete from ").append(table.getTableName()).append(" ");
+                builder.append(";\n\t</delete>\n\n");
+
+                // selectBy
+                builder.append("\t<select id=\"select").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
+                        .append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount > 0) {
+                        builder.append("And");
+                    }
+                    builder.append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                            .substring(0, 1).toUpperCase() +
+                            FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
+                                    .substring(1));
+                }
+                builder.append("\" returnType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
+                        .append(FieldToPojoUtil.tableNameToEntityName(table.getTableName())).append("\">\n");
+                builder.append("\t\tselect * from ").append(table.getTableName());
+                builder.append(";\n\t</select>\n\n");
+            }
+
             String xmlContent = String.format(XML_TEMPLATE, PackageConstant.PACKAGE + ".mapper." +
                             FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + "Mapper",
                     builder.toString());
-
-            // 索引对应方法
-            Map<String, List<Field>> indexes = table.getIndexes();
-
 
             // 写入文件
             writer.write(xmlContent);
