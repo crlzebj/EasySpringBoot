@@ -59,70 +59,31 @@ public class ProjectGenerator {
     public static void generateDirectory() {
         // 创建pojo目录
         File file = new File(PathConstant.POJO + "entity/");
-        if (file.exists() || file.mkdirs()) {
-            logger.info("entity 目录创建成功!");
-        } else {
-            logger.info("entity 目录创建失败");
-            return;
-        }
+        file.mkdirs();
         file = new File(PathConstant.POJO + "dto/");
-        if (file.exists() || file.mkdirs()) {
-            logger.info("dto 目录创建成功!");
-        } else {
-            logger.info("dto 目录创建失败");
-            return;
-        }
+        file.mkdirs();
         file = new File(PathConstant.POJO + "vo/");
-        if (file.exists() || file.mkdirs()) {
-            logger.info("vo 目录创建成功!");
-        } else {
-            logger.info("vo 目录创建失败");
-            return;
-        }
+        file.mkdirs();
 
         // 创建mapper目录
         file = new File(PathConstant.MAPPER_INTERFACE);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("mapper 目录创建成功!");
-        } else {
-            logger.info("mapper 目录创建失败");
-            return;
-        }
+        file.mkdirs();
 
         // 创建service目录
         file = new File(PathConstant.SERVICE);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("service 目录创建成功!");
-        } else {
-            logger.info("service 目录创建失败");
-            return;
-        }
+        file.mkdirs();
 
         // 创建controller目录
         file = new File(PathConstant.CONTROLLER);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("controller 目录创建成功!");
-        } else {
-            logger.info("controller 目录创建失败");
-            return;
-        }
+        file.mkdirs();
 
         // 创建resources目录
         file = new File(PathConstant.MAIN_RESOURCE);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("resources 目录创建成功!");
-        } else {
-            logger.info("resources 目录创建失败");
-            return;
-        }
+        file.mkdirs();
 
         // 创建mapper xml目录
         file = new File(PathConstant.MAPPER_XML);
-        if (file.exists() || file.mkdirs()) {
-            logger.info("mapper xml 目录创建成功!");
-        } else {
-            logger.info("mapper xml 目录创建失败");
-        }
+        file.mkdirs();
     }
 
     /**
@@ -130,17 +91,10 @@ public class ProjectGenerator {
      */
     public static void generatePom() {
         File file = new File(PathConstant.PROJECT_ROOT + "pom.xml");
-        if(file.exists()){
-            logger.info("pom.xml 文件已存在");
-            return;
-        }
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             String pomContent = POM_TEMPLATE.formatted(PropertiesReader.getSetting("package.prefix"), PropertiesReader.getSetting("project.name"));
             writer.write(pomContent);
             writer.flush();
-            writer.close();
-            logger.info("pom.xml 生成成功！");
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

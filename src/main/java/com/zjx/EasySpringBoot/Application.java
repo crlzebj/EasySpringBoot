@@ -1,6 +1,5 @@
 package com.zjx.EasySpringBoot;
 
-import com.zjx.EasySpringBoot.constant.PathConstant;
 import com.zjx.EasySpringBoot.generator.MapperGenerator;
 import com.zjx.EasySpringBoot.generator.PojoGenerator;
 import com.zjx.EasySpringBoot.generator.ProjectGenerator;

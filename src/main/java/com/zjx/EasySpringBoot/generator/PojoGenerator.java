@@ -19,13 +19,9 @@ public class PojoGenerator {
      * @param table
      */
     public static void generateEntity(Table table) {
-        File file = new File(PathConstant.POJO + "/entity/", FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
-        if (file.exists()) {
-            logger.info("{} 文件已存在", FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
-            return;
-        }
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        File file = new File(PathConstant.POJO + "/entity/",
+                FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // 包
             writer.write("package " + PropertiesReader.getSetting("package.prefix") +
                          "." + PropertiesReader.getSetting("project.name") + ".pojo.entity;");
@@ -76,8 +72,6 @@ public class PojoGenerator {
             writer.write("}");
             writer.newLine();
             writer.flush();
-            writer.close();
-            logger.info("{} 文件生成成功", FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

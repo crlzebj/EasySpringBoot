@@ -87,8 +87,8 @@ public class TablesReader {
         try{
             Class.forName(PropertiesReader.getSetting("db.driver.name"));
             Connection connection = DriverManager.getConnection(PropertiesReader.getSetting("db.url"),
-                                                     PropertiesReader.getSetting("db.username"),
-                                                     PropertiesReader.getSetting("db.password"));
+                    PropertiesReader.getSetting("db.username"),
+                    PropertiesReader.getSetting("db.password"));
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(SHOW_TABLES_SQL);
             while (resultSet.next()) {

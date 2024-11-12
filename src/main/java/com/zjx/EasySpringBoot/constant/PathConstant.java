@@ -21,12 +21,13 @@ public class PathConstant {
     public static final String MAPPER_XML;
 
     static {
-        PROJECT_ROOT = PropertiesReader.getSetting("project.path") + PropertiesReader.getSetting("project.name") + "/";
+        PROJECT_ROOT = PropertiesReader.getSetting("project.path") +
+                PropertiesReader.getSetting("project.name") + "/";
         MAIN_JAVA = PROJECT_ROOT + "src/main/java/";
         POJO = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
                 "/" + PropertiesReader.getSetting("project.name") + "/pojo/";
         MAPPER_INTERFACE = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                           "/" + PropertiesReader.getSetting("project.name") + "/mapper/";
+                "/" + PropertiesReader.getSetting("project.name") + "/mapper/";
         SERVICE = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
                 "/" + PropertiesReader.getSetting("project.name") + "/service/";
         CONTROLLER = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
