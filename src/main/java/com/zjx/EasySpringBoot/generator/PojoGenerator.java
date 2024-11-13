@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 public class PojoGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(PojoGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(PojoGenerator.class);
 
     /**
      * 根据表生成对应实体类
@@ -28,7 +28,7 @@ public class PojoGenerator {
             writer.newLine();
             writer.newLine();
 
-            // 头文件
+            // import语句
             writer.write("import java.io.Serializable;");
             writer.newLine();
             if (table.isHasDecimalType()) {
@@ -72,7 +72,7 @@ public class PojoGenerator {
             writer.newLine();
             writer.flush();
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }

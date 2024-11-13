@@ -10,7 +10,7 @@ import java.util.Properties;
  * 配置文件读取工具
  */
 public class PropertiesReader {
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesReader.class);
+    private static final Logger log = LoggerFactory.getLogger(PropertiesReader.class);
     // 存储配置信息
     private static final Properties properties;
 
@@ -20,7 +20,7 @@ public class PropertiesReader {
             InputStream fis = PropertiesReader.class.getClassLoader().getResourceAsStream("application.properties");
             properties.load(fis);
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
         }
     }
 

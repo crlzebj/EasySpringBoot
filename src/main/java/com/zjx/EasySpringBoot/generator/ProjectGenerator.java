@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 public class ProjectGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(ProjectGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(ProjectGenerator.class);
 
     // pom.xml文件模板
     private static final String POM_TEMPLATE;
@@ -36,7 +36,6 @@ public class ProjectGenerator {
                         <maven.compiler.target>17</maven.compiler.target>
                         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                         <lombok.version>1.18.26</lombok.version>
-                        <mysql.version>8.0.30</mysql.version>
                         <mybatis.spring.version>2.2.0</mybatis.spring.version>
                     </properties>
                 
@@ -52,16 +51,33 @@ public class ProjectGenerator {
                         <dependency>
                             <groupId>mysql</groupId>
                             <artifactId>mysql-connector-java</artifactId>
-                            <version>${mysql.version}</version>
                         </dependency>
                 
+                        <!-- mybatis-spring -->
                         <dependency>
                             <groupId>org.mybatis.spring.boot</groupId>
                             <artifactId>mybatis-spring-boot-starter</artifactId>
                             <version>${mybatis.spring.version}</version>
                         </dependency>
-                    </dependencies>
                 
+                        <!-- springboot -->
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter</artifactId>
+                        </dependency>
+                
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-test</artifactId>
+                            <scope>test</scope>
+                        </dependency>
+                
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-web</artifactId>
+                            <scope>compile</scope>
+                        </dependency>
+                    </dependencies>
                 </project>
                 """;
     }
@@ -83,7 +99,7 @@ public class ProjectGenerator {
         file.mkdirs();
 
         // 创建service目录
-        file = new File(PathConstant.SERVICE);
+        file = new File(PathConstant.SERVICE + "/impl/");
         file.mkdirs();
 
         // 创建controller目录
@@ -109,7 +125,34 @@ public class ProjectGenerator {
             writer.write(pomContent);
             writer.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 生成SpringBoot配置文件
+     */
+    public static void generateYml() {
+        File file = new File(PathConstant.MAIN_RESOURCE + "application.yml");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("this is yml.\n");
+            writer.flush();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 生成SprintBoot启动类
+     */
+    public static void generateApplication() {
+        File file = new File(PathConstant.APPLICATION_ROOT, PropertiesReader.getSetting("project.name") + "Application.java");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("public class " + PropertiesReader.getSetting("project.name") + "Application {\n");
+            writer.write("}\n");
+            writer.flush();
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
@@ -119,5 +162,7 @@ public class ProjectGenerator {
     public static void generateProject() {
         generateDirectory();
         generatePom();
+        generateYml();
+        generateApplication();
     }
 }

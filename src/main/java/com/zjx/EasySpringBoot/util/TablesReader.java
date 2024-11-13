@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TablesReader {
-    private static final Logger logger = LoggerFactory.getLogger(TablesReader.class);
+    private static final Logger log = LoggerFactory.getLogger(TablesReader.class);
 
     // SQL 语句
     private static final String SHOW_TABLES_SQL = "show table status;";
@@ -48,7 +48,7 @@ public class TablesReader {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class TablesReader {
             resultSet.close();
             stmt.close();
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class TablesReader {
             stmt.close();
             connection.close();
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
         }
     }
 

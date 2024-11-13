@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MapperGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(MapperGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(MapperGenerator.class);
 
     // xml文件模板
     private static final String XML_TEMPLATE;
@@ -72,22 +72,23 @@ public class MapperGenerator {
                 builder.append("\t<update id=\"update").append(entityName)
                         .append("By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     if (fieldIdxCount > 0) {
                         builder.append("And");
                     }
-                    builder.append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
-                            .substring(0, 1).toUpperCase() +
-                            FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
-                                    .substring(1));
+                    builder.append(javaName.substring(0, 1).toUpperCase()).append(javaName.substring(1));
                 }
                 builder.append("\">\n");
                 builder.append("\t\tupdate ").append(table.getTableName()).append("\n\t\t<set>\n");
                 for (int fieldIdxCount = 0; fieldIdxCount < fields.size(); fieldIdxCount++) {
-                    builder.append("\t\t\t<if test=\"").append(FieldToPojoUtil.
-                                    fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName())).append("!=null\">\n")
-                            .append("\t\t\t\t").append(fields.get(fieldIdxCount).getFieldName()).append("=#{")
-                            .append(FieldToPojoUtil.fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName()))
-                            .append("}\n\t\t\t</if>\n");
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName());
+                    builder.append("\t\t\t<if test=\"").append(entityName.substring(0, 1).toLowerCase())
+                            .append(entityName.substring(1)).append(".")
+                            .append(javaName).append("!=null\">\n").append("\t\t\t\t")
+                            .append(fields.get(fieldIdxCount).getFieldName()).append("=#{")
+                            .append(entityName.substring(0, 1).toLowerCase())
+                            .append(entityName.substring(1)).append(".")
+                            .append(javaName).append("},\n\t\t\t</if>\n");
                 }
                 builder.append("\t\t</set>\n\t\twhere ");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
@@ -159,7 +160,7 @@ public class MapperGenerator {
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -173,10 +174,12 @@ public class MapperGenerator {
             writer.newLine();
             writer.newLine();
 
-            // 头文件
+            // import语句
             writer.write("import " + PackageConstant.PACKAGE + ".pojo.entity." + entityName + ";");
             writer.newLine();
             writer.write("import org.apache.ibatis.annotations.Mapper;");
+            writer.newLine();
+            writer.write("import org.apache.ibatis.annotations.Param;");
             writer.newLine();
             writer.newLine();
             writer.write("import java.util.List;");
@@ -188,10 +191,14 @@ public class MapperGenerator {
             writer.newLine();
             writer.write("public interface " + entityName + "Mapper {");
             writer.newLine();
+
+            // insert方法
             writer.write("\tvoid insert" + entityName + "(" + entityName + " "
                     + entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + ");");
             writer.newLine();
             writer.newLine();
+
+            // select方法
             writer.write("\tList<" + entityName + "> select" + entityName + "();");
             writer.newLine();
 
@@ -213,11 +220,13 @@ public class MapperGenerator {
                 }
                 builder.append("(");
                 for (Field field : indexFields) {
-                    String javaName = FieldToPojoUtil.fieldNameToJavaName(field.getFieldName());
                     String javaType = FieldToPojoUtil.fieldTypeToJavaType(field.getFieldType());
-                    builder.append(javaType).append(" ").append(javaName).append(", ");
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(field.getFieldName());
+                    builder.append("@Param(\"").append(javaName).append("\") ").
+                            append(javaType).append(" ").append(javaName).append(", ");
                 }
-                builder.append(entityName).append(" ")
+                builder.append("@Param(\"").append(entityName.substring(0, 1).toLowerCase())
+                        .append(entityName.substring(1)).append("\") ").append(entityName).append(" ")
                         .append(entityName.substring(0, 1).toLowerCase()).append(entityName.substring(1))
                         .append(");\n");
 
@@ -235,7 +244,8 @@ public class MapperGenerator {
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     String javaType = FieldToPojoUtil.fieldTypeToJavaType(indexFields.get(fieldIdxCount).getFieldType());
-                    builder.append(javaType).append(" ").append(javaName);
+                    builder.append("@Param(\"").append(javaName).append("\") ")
+                            .append(javaType).append(" ").append(javaName);
                     if (fieldIdxCount < indexFields.size() - 1) {
                         builder.append(", ");
                     } else {
@@ -257,7 +267,8 @@ public class MapperGenerator {
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     String javaType = FieldToPojoUtil.fieldTypeToJavaType(indexFields.get(fieldIdxCount).getFieldType());
-                    builder.append(javaType).append(" ").append(javaName);
+                    builder.append("@Param(\"").append(javaName).append("\") ")
+                            .append(javaType).append(" ").append(javaName);
                     if (fieldIdxCount < indexFields.size() - 1) {
                         builder.append(", ");
                     } else {
@@ -271,7 +282,7 @@ public class MapperGenerator {
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }

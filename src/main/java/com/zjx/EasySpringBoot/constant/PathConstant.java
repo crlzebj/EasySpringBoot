@@ -7,6 +7,8 @@ public class PathConstant {
     public static final String PROJECT_ROOT;
 
     public static final String MAIN_JAVA;
+    // SpringBoot启动类生成路径
+    public static final String APPLICATION_ROOT;
     // pojo生成路径
     public static final String POJO;
     // mapper接口生成路径
@@ -24,14 +26,12 @@ public class PathConstant {
         PROJECT_ROOT = PropertiesReader.getSetting("project.path") +
                 PropertiesReader.getSetting("project.name") + "/";
         MAIN_JAVA = PROJECT_ROOT + "src/main/java/";
-        POJO = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                "/" + PropertiesReader.getSetting("project.name") + "/pojo/";
-        MAPPER_INTERFACE = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                "/" + PropertiesReader.getSetting("project.name") + "/mapper/";
-        SERVICE = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                "/" + PropertiesReader.getSetting("project.name") + "/service/";
-        CONTROLLER = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
-                "/" + PropertiesReader.getSetting("project.name") + "/controller/";
+        APPLICATION_ROOT = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
+                "/" + PropertiesReader.getSetting("project.name");
+        POJO = APPLICATION_ROOT + "/pojo/";
+        MAPPER_INTERFACE = APPLICATION_ROOT + "/mapper/";
+        SERVICE = APPLICATION_ROOT + "/service/";
+        CONTROLLER = APPLICATION_ROOT + "/controller/";
 
         MAIN_RESOURCE = PROJECT_ROOT + "src/main/resources/";
         MAPPER_XML = MAIN_RESOURCE + "mapper/";
