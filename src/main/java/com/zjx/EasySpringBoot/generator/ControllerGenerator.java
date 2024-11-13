@@ -51,6 +51,7 @@ public class ControllerGenerator {
                     + entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + "Service;\n\n");
 
             // insert方法
+            // writer.write("\t@RequestMapping()\n");
             writer.write("\tpublic void insert" + entityName + "(" + entityName + " "
                     + entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + ") {\n");
             writer.write("\t\t" + entityName.substring(0, 1).toLowerCase() + entityName.substring(1)
@@ -59,6 +60,7 @@ public class ControllerGenerator {
             writer.write("\t}\n\n");
 
             // select方法
+            // writer.write("\t@RequestMapping()\n");
             writer.write("\tpublic List<" + entityName + "> select" + entityName + "() {\n");
             writer.write("\t\treturn " + entityName.substring(0, 1).toLowerCase() + entityName.substring(1)
                     + "Service.select" + entityName + "();\n");
@@ -70,7 +72,8 @@ public class ControllerGenerator {
                 List<Field> indexFields = index.getValue();
 
                 // updateBy方法
-                writer.write("\n\tpublic void update" + entityName + "By");
+                // writer.write("\n\t@RequestMapping()\n");
+                writer.write("\tpublic void update" + entityName + "By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     writer.write(javaName.substring(0, 1).toUpperCase() + javaName.substring(1));
@@ -110,7 +113,8 @@ public class ControllerGenerator {
                         + entityName.substring(1) + ");\n\t}\n");
 
                 // deleteBy方法
-                writer.write("\n\tpublic void delete" + entityName + "By");
+                // writer.write("\n\t@RequestMapping()\n");
+                writer.write("\tpublic void delete" + entityName + "By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     writer.write(javaName.substring(0, 1).toUpperCase() + javaName.substring(1));
@@ -153,7 +157,8 @@ public class ControllerGenerator {
                 }
 
                 // selectBy方法
-                writer.write("\n\tpublic " + entityName + " select" + entityName + "By");
+                // writer.write("\n\t@RequestMapping()\n");
+                writer.write("\tpublic " + entityName + " select" + entityName + "By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
                     writer.write(javaName.substring(0, 1).toUpperCase() + javaName.substring(1));

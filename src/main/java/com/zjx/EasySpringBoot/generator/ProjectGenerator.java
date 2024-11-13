@@ -12,6 +12,8 @@ public class ProjectGenerator {
 
     // pom.xml文件模板
     private static final String POM_TEMPLATE;
+    private static final String YML_TEMPLATE;
+    private static final String SPRINGBOOT_APPLICATION_TEMPLATE;
 
     static {
         POM_TEMPLATE = """
@@ -36,6 +38,7 @@ public class ProjectGenerator {
                         <maven.compiler.target>17</maven.compiler.target>
                         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                         <lombok.version>1.18.26</lombok.version>
+                        <druid.spring.version>1.2.1</druid.spring.version>
                         <mybatis.spring.version>2.2.0</mybatis.spring.version>
                     </properties>
                 
@@ -51,6 +54,13 @@ public class ProjectGenerator {
                         <dependency>
                             <groupId>mysql</groupId>
                             <artifactId>mysql-connector-java</artifactId>
+                        </dependency>
+                
+                        <!-- druid连接池 -->
+                        <dependency>
+                            <groupId>com.alibaba</groupId>
+                            <artifactId>druid-spring-boot-starter</artifactId>
+                            <version>${druid.spring.version}</version>
                         </dependency>
                 
                         <!-- mybatis-spring -->
@@ -79,6 +89,41 @@ public class ProjectGenerator {
                         </dependency>
                     </dependencies>
                 </project>
+                """;
+
+        YML_TEMPLATE = """
+                server:
+                  port: 8080
+                
+                spring:
+                  datasource:
+                    druid:
+                      driver-class-name: %s
+                      url: %s
+                      username: %s
+                      password: %s
+                
+                mybatis:
+                  # mapper配置文件
+                  mapper-locations: classpath:mapper/*.xml
+                  # type-aliases-package: com.sky.entity
+                  configuration:
+                    # 开启驼峰命名
+                    map-underscore-to-camel-case: true
+                """;
+
+        SPRINGBOOT_APPLICATION_TEMPLATE = """
+                package %s;
+                
+                import org.springframework.boot.SpringApplication;
+                import org.springframework.boot.autoconfigure.SpringBootApplication;
+                
+                @SpringBootApplication
+                public class EasySpringBootDemoApplication {
+                    public static void main(String[] args) {
+                        SpringApplication.run(%sApplication.class, args);
+                    }
+                }
                 """;
     }
 
@@ -135,7 +180,11 @@ public class ProjectGenerator {
     public static void generateYml() {
         File file = new File(PathConstant.MAIN_RESOURCE + "application.yml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("this is yml.\n");
+            String ymlContent = YML_TEMPLATE.formatted(PropertiesReader.getSetting("db.driver.name"),
+                    PropertiesReader.getSetting("db.url"),
+                    PropertiesReader.getSetting("db.username"),
+                    PropertiesReader.getSetting("db.password"));
+            writer.write(ymlContent);
             writer.flush();
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -148,8 +197,12 @@ public class ProjectGenerator {
     public static void generateApplication() {
         File file = new File(PathConstant.APPLICATION_ROOT, PropertiesReader.getSetting("project.name") + "Application.java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("public class " + PropertiesReader.getSetting("project.name") + "Application {\n");
-            writer.write("}\n");
+            String springBootApplicationContent = SPRINGBOOT_APPLICATION_TEMPLATE.formatted(
+                    PropertiesReader.getSetting("package.prefix")
+                            + "." + PropertiesReader.getSetting("project.name"),
+                    PropertiesReader.getSetting("project.name")
+            );
+            writer.write(springBootApplicationContent);
             writer.flush();
         } catch (Exception e) {
             log.error(e.getMessage());
