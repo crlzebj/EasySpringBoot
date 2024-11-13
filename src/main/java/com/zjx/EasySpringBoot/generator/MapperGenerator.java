@@ -58,7 +58,7 @@ public class MapperGenerator {
             }
 
             // select
-            builder.append("\t<select id=\"select").append(entityName).append("\" returnType=\"")
+            builder.append("\t<select id=\"select").append(entityName).append("\" resultType=\"")
                     .append(PackageConstant.PACKAGE).append(".pojo.entity.").append(entityName).append("\">\n");
             builder.append("\t\tselect * from ").append(table.getTableName()).append(";\n")
                     .append("\t</select>\n\n");
@@ -135,7 +135,7 @@ public class MapperGenerator {
                             FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
                                     .substring(1));
                 }
-                builder.append("\" returnType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
+                builder.append("\" resultType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
                         .append(entityName).append("\">\n");
                 builder.append("\t\tselect * from ").append(table.getTableName());
                 builder.append("\n\t\twhere ");
@@ -198,8 +198,74 @@ public class MapperGenerator {
             // 索引对应方法
             Set<Map.Entry<String, List<Field>>> indexes = table.getIndexes().entrySet();
             for (Map.Entry<String, List<Field>> index : indexes) {
-                List<Field> fields = index.getValue();
+                List<Field> indexFields = index.getValue();
+                StringBuilder builder = new StringBuilder();
 
+                // updateBy方法
+                builder.append("\n\tvoid update").append(entityName).append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
+
+                    builder.append(javaName.substring(0, 1).toUpperCase()).append(javaName.substring(1));
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append("And");
+                    }
+                }
+                builder.append("(");
+                for (Field field : indexFields) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(field.getFieldName());
+                    String javaType = FieldToPojoUtil.fieldTypeToJavaType(field.getFieldType());
+                    builder.append(javaType).append(" ").append(javaName).append(", ");
+                }
+                builder.append(entityName).append(" ")
+                        .append(entityName.substring(0, 1).toLowerCase()).append(entityName.substring(1))
+                        .append(");\n");
+
+                // deleteBy方法
+                builder.append("\n\tvoid delete").append(entityName).append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
+
+                    builder.append(javaName.substring(0, 1).toUpperCase()).append(javaName.substring(1));
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append("And");
+                    }
+                }
+                builder.append("(");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
+                    String javaType = FieldToPojoUtil.fieldTypeToJavaType(indexFields.get(fieldIdxCount).getFieldType());
+                    builder.append(javaType).append(" ").append(javaName);
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(", ");
+                    } else {
+                        builder.append(");\n");
+                    }
+                }
+
+                // selectBy方法
+                builder.append("\n\t").append(entityName).append(" select").append(entityName).append("By");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
+
+                    builder.append(javaName.substring(0, 1).toUpperCase()).append(javaName.substring(1));
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append("And");
+                    }
+                }
+                builder.append("(");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    String javaName = FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName());
+                    String javaType = FieldToPojoUtil.fieldTypeToJavaType(indexFields.get(fieldIdxCount).getFieldType());
+                    builder.append(javaType).append(" ").append(javaName);
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(", ");
+                    } else {
+                        builder.append(");\n");
+                    }
+                }
+
+                writer.write(builder.toString());
             }
             writer.write("}");
             writer.newLine();

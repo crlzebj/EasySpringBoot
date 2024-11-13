@@ -21,6 +21,12 @@ public class ProjectGenerator {
                          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
                     <modelVersion>4.0.0</modelVersion>
                 
+                    <parent>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-parent</artifactId>
+                        <version>2.7.3</version>
+                    </parent>
+                
                     <groupId>%s</groupId>
                     <artifactId>%s</artifactId>
                     <version>1.0-SNAPSHOT</version>
@@ -31,6 +37,7 @@ public class ProjectGenerator {
                         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                         <lombok.version>1.18.26</lombok.version>
                         <mysql.version>8.0.30</mysql.version>
+                        <mybatis.spring.version>2.2.0</mybatis.spring.version>
                     </properties>
                 
                     <dependencies>
@@ -46,6 +53,12 @@ public class ProjectGenerator {
                             <groupId>mysql</groupId>
                             <artifactId>mysql-connector-java</artifactId>
                             <version>${mysql.version}</version>
+                        </dependency>
+                
+                        <dependency>
+                            <groupId>org.mybatis.spring.boot</groupId>
+                            <artifactId>mybatis-spring-boot-starter</artifactId>
+                            <version>${mybatis.spring.version}</version>
                         </dependency>
                     </dependencies>
                 

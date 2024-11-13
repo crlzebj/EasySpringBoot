@@ -1,8 +1,6 @@
 package com.zjx.EasySpringBoot;
 
-import com.zjx.EasySpringBoot.generator.MapperGenerator;
-import com.zjx.EasySpringBoot.generator.PojoGenerator;
-import com.zjx.EasySpringBoot.generator.ProjectGenerator;
+import com.zjx.EasySpringBoot.generator.*;
 import com.zjx.EasySpringBoot.pojo.Table;
 import com.zjx.EasySpringBoot.util.TablesReader;
 
@@ -13,12 +11,18 @@ import java.util.Set;
  */
 public class Application {
     public static void main(String[] args) {
+        // 生成基本SpringBoot项目
         ProjectGenerator.generateProject();
+
         Set<Table> tableSet = TablesReader.getTableSet();
+
         for (Table table : tableSet) {
             PojoGenerator.generateEntity(table);
             MapperGenerator.generateXml(table);
             MapperGenerator.generateInterface(table);
+            ServiceGenerator.generateInterface(table);
+            ServiceGenerator.generateImpl(table);
+            ControllerGenerator.generateController(table);
         }
     }
 }
