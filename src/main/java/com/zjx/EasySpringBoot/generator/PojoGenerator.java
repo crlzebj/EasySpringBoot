@@ -1,5 +1,6 @@
 package com.zjx.EasySpringBoot.generator;
 
+import com.zjx.EasySpringBoot.constant.PackageConstant;
 import com.zjx.EasySpringBoot.constant.PathConstant;
 import com.zjx.EasySpringBoot.pojo.Field;
 import com.zjx.EasySpringBoot.pojo.Table;
@@ -19,12 +20,12 @@ public class PojoGenerator {
      * @param table
      */
     public static void generateEntity(Table table) {
-        File file = new File(PathConstant.POJO + "/entity/",
-                FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + ".java");
+        String entityName = FieldToPojoUtil.tableNameToEntityName(table.getTableName());
+
+        File file = new File(PathConstant.POJO + "/entity/", entityName + ".java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // 包
-            writer.write("package " + PropertiesReader.getSetting("package.prefix") +
-                         "." + PropertiesReader.getSetting("project.name") + ".pojo.entity;");
+            writer.write("package " + PackageConstant.PACKAGE + ".pojo.entity;");
             writer.newLine();
             writer.newLine();
 
@@ -58,8 +59,7 @@ public class PojoGenerator {
             writer.newLine();
 
             // 类定义
-            writer.write("public class " + FieldToPojoUtil.tableNameToEntityName(table.getTableName()) +
-                         " implements Serializable {");
+            writer.write("public class " + entityName + " implements Serializable {");
             writer.newLine();
             for(int i = 0; i < table.getFields().size(); i++) {
                 Field field = table.getFields().get(i);

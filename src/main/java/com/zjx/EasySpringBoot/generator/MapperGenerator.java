@@ -37,16 +37,16 @@ public class MapperGenerator {
      * @param table
      */
     public static void generateXml(Table table) {
-        File file = new File(PathConstant.MAPPER_XML,
-                FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + "Mapper.xml");
+        String entityName = FieldToPojoUtil.tableNameToEntityName(table.getTableName());
+
+        File file = new File(PathConstant.MAPPER_XML, entityName + "Mapper.xml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             List<Field> fields = table.getFields();
             StringBuilder builder = new StringBuilder();
 
             // insert
-            builder.append("\t<insert id=\"insert").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
-                    .append("\">\n");
-            builder.append("\t\tinsert into ").append(table.getTableName()).append(" values (");
+            builder.append("\t<insert id=\"insert").append(entityName).append("\">\n");
+            builder.append("\t\tinsert into ").append(table.getTableName()).append(" values\n\t\t(");
             for (int fieldIdxCount = 0; fieldIdxCount < fields.size(); fieldIdxCount++) {
                 builder.append("#{").append(FieldToPojoUtil.fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName()))
                         .append("}");
@@ -58,9 +58,8 @@ public class MapperGenerator {
             }
 
             // select
-            builder.append("\t<select id=\"select").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
-                    .append("\" returnType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
-                    .append(FieldToPojoUtil.tableNameToEntityName(table.getTableName())).append("\">\n");
+            builder.append("\t<select id=\"select").append(entityName).append("\" returnType=\"")
+                    .append(PackageConstant.PACKAGE).append(".pojo.entity.").append(entityName).append("\">\n");
             builder.append("\t\tselect * from ").append(table.getTableName()).append(";\n")
                     .append("\t</select>\n\n");
 
@@ -70,7 +69,7 @@ public class MapperGenerator {
                 List<Field> indexFields = index.getValue();
 
                 // updateBy
-                builder.append("\t<update id=\"update").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
+                builder.append("\t<update id=\"update").append(entityName)
                         .append("By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     if (fieldIdxCount > 0) {
@@ -82,21 +81,27 @@ public class MapperGenerator {
                                     .substring(1));
                 }
                 builder.append("\">\n");
-                builder.append("\t\tupdate ").append(table.getTableName()).append(" set ");
+                builder.append("\t\tupdate ").append(table.getTableName()).append("\n\t\t<set>\n");
                 for (int fieldIdxCount = 0; fieldIdxCount < fields.size(); fieldIdxCount++) {
-                    builder.append(fields.get(fieldIdxCount).getFieldName()).append("=#{")
+                    builder.append("\t\t\t<if test=\"").append(FieldToPojoUtil.
+                                    fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName())).append("!=null\">\n")
+                            .append("\t\t\t\t").append(fields.get(fieldIdxCount).getFieldName()).append("=#{")
                             .append(FieldToPojoUtil.fieldNameToJavaName(fields.get(fieldIdxCount).getFieldName()))
-                            .append("}");
-                    if (fieldIdxCount < fields.size() - 1) {
-                       builder.append(",");
-                    } else {
-                        builder.append(";\n\t</update>\n\n");
-                    }
+                            .append("}\n\t\t\t</if>\n");
                 }
+                builder.append("\t\t</set>\n\t\twhere ");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                       builder.append(" and ");
+                    }
+                    builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
+                            .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
+                            .append("}");
+                }
+                builder.append(";\n\t</update>\n\n");
 
                 // deleteBy
-                builder.append("\t<delete id=\"delete").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
-                        .append("By");
+                builder.append("\t<delete id=\"delete").append(entityName).append("By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     if (fieldIdxCount > 0) {
                         builder.append("And");
@@ -108,11 +113,19 @@ public class MapperGenerator {
                 }
                 builder.append("\">\n");
                 builder.append("\t\tdelete from ").append(table.getTableName()).append(" ");
+                builder.append("\n\t\twhere ");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(" and ");
+                    }
+                    builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
+                            .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
+                            .append("}");
+                }
                 builder.append(";\n\t</delete>\n\n");
 
                 // selectBy
-                builder.append("\t<select id=\"select").append(FieldToPojoUtil.tableNameToEntityName(table.getTableName()))
-                        .append("By");
+                builder.append("\t<select id=\"select").append(entityName).append("By");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
                     if (fieldIdxCount > 0) {
                         builder.append("And");
@@ -123,13 +136,22 @@ public class MapperGenerator {
                                     .substring(1));
                 }
                 builder.append("\" returnType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
-                        .append(FieldToPojoUtil.tableNameToEntityName(table.getTableName())).append("\">\n");
+                        .append(entityName).append("\">\n");
                 builder.append("\t\tselect * from ").append(table.getTableName());
+                builder.append("\n\t\twhere ");
+                for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(" and ");
+                    }
+                    builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
+                            .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
+                            .append("}");
+                }
                 builder.append(";\n\t</select>\n\n");
             }
 
-            String xmlContent = String.format(XML_TEMPLATE, PackageConstant.PACKAGE + ".mapper." +
-                            FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + "Mapper",
+            String xmlContent = String.format(XML_TEMPLATE,
+                    PackageConstant.PACKAGE + ".mapper." + entityName + "Mapper",
                     builder.toString());
 
             // 写入文件
@@ -142,10 +164,43 @@ public class MapperGenerator {
     }
 
     public static void generateInterface(Table table) {
-        File file = new File(PathConstant.MAPPER_INTERFACE, FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + "Mapper.java");
+        String entityName = FieldToPojoUtil.tableNameToEntityName(table.getTableName());
+
+        File file = new File(PathConstant.MAPPER_INTERFACE, entityName + "Mapper.java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("public interface " + FieldToPojoUtil.tableNameToEntityName(table.getTableName()) + "Mapper {");
+            // 包
+            writer.write("package " + PackageConstant.PACKAGE + ".mapper;");
             writer.newLine();
+            writer.newLine();
+
+            // 头文件
+            writer.write("import " + PackageConstant.PACKAGE + ".pojo.entity." + entityName + ";");
+            writer.newLine();
+            writer.write("import org.apache.ibatis.annotations.Mapper;");
+            writer.newLine();
+            writer.newLine();
+            writer.write("import java.util.List;");
+            writer.newLine();
+            writer.newLine();
+
+            // 注解
+            writer.write("@Mapper");
+            writer.newLine();
+            writer.write("public interface " + entityName + "Mapper {");
+            writer.newLine();
+            writer.write("\tvoid insert" + entityName + "(" + entityName + " "
+                    + entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + ");");
+            writer.newLine();
+            writer.newLine();
+            writer.write("\tList<" + entityName + "> select" + entityName + "();");
+            writer.newLine();
+
+            // 索引对应方法
+            Set<Map.Entry<String, List<Field>>> indexes = table.getIndexes().entrySet();
+            for (Map.Entry<String, List<Field>> index : indexes) {
+                List<Field> fields = index.getValue();
+
+            }
             writer.write("}");
             writer.newLine();
             writer.flush();
