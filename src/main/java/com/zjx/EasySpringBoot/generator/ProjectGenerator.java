@@ -119,7 +119,7 @@ public class ProjectGenerator {
                 import org.springframework.boot.autoconfigure.SpringBootApplication;
                 
                 @SpringBootApplication
-                public class EasySpringBootDemoApplication {
+                public class %sApplication {
                     public static void main(String[] args) {
                         SpringApplication.run(%sApplication.class, args);
                     }
@@ -200,6 +200,7 @@ public class ProjectGenerator {
             String springBootApplicationContent = SPRINGBOOT_APPLICATION_TEMPLATE.formatted(
                     PropertiesReader.getSetting("package.prefix")
                             + "." + PropertiesReader.getSetting("project.name"),
+                    PropertiesReader.getSetting("project.name"),
                     PropertiesReader.getSetting("project.name")
             );
             writer.write(springBootApplicationContent);
