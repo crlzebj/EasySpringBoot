@@ -7,6 +7,6 @@ public class PackageConstant {
 
     static {
         PACKAGE = PropertiesReader.getSetting("package.prefix") + "."
-                + PropertiesReader.getSetting("project.name");
+                + PropertiesReader.getSetting("project.name").toLowerCase();
     }
 }

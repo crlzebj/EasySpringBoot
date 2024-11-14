@@ -1,5 +1,6 @@
 package com.zjx.EasySpringBoot.generator;
 
+import com.zjx.EasySpringBoot.constant.PackageConstant;
 import com.zjx.EasySpringBoot.constant.PathConstant;
 import com.zjx.EasySpringBoot.util.PropertiesReader;
 import org.slf4j.Logger;
@@ -106,7 +107,7 @@ public class ProjectGenerator {
                 mybatis:
                   # mapper配置文件
                   mapper-locations: classpath:mapper/*.xml
-                  # type-aliases-package: com.sky.entity
+                  type-aliases-package: %s
                   configuration:
                     # 开启驼峰命名
                     map-underscore-to-camel-case: true
@@ -166,7 +167,8 @@ public class ProjectGenerator {
     public static void generatePom() {
         File file = new File(PathConstant.PROJECT_ROOT + "pom.xml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            String pomContent = POM_TEMPLATE.formatted(PropertiesReader.getSetting("package.prefix"), PropertiesReader.getSetting("project.name"));
+            String pomContent = POM_TEMPLATE.formatted(PropertiesReader.getSetting("package.prefix"),
+                    PropertiesReader.getSetting("project.name").toLowerCase());
             writer.write(pomContent);
             writer.flush();
         } catch (Exception e) {
@@ -183,7 +185,8 @@ public class ProjectGenerator {
             String ymlContent = YML_TEMPLATE.formatted(PropertiesReader.getSetting("db.driver.name"),
                     PropertiesReader.getSetting("db.url"),
                     PropertiesReader.getSetting("db.username"),
-                    PropertiesReader.getSetting("db.password"));
+                    PropertiesReader.getSetting("db.password"),
+                    PackageConstant.PACKAGE + ".pojo.entity");
             writer.write(ymlContent);
             writer.flush();
         } catch (Exception e) {
@@ -198,8 +201,7 @@ public class ProjectGenerator {
         File file = new File(PathConstant.APPLICATION_ROOT, PropertiesReader.getSetting("project.name") + "Application.java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             String springBootApplicationContent = SPRINGBOOT_APPLICATION_TEMPLATE.formatted(
-                    PropertiesReader.getSetting("package.prefix")
-                            + "." + PropertiesReader.getSetting("project.name"),
+                    PackageConstant.PACKAGE,
                     PropertiesReader.getSetting("project.name"),
                     PropertiesReader.getSetting("project.name")
             );

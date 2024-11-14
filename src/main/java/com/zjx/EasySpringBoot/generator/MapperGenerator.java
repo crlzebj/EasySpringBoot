@@ -59,7 +59,7 @@ public class MapperGenerator {
 
             // select
             builder.append("\t<select id=\"select").append(entityName).append("\" resultType=\"")
-                    .append(PackageConstant.PACKAGE).append(".pojo.entity.").append(entityName).append("\">\n");
+                    .append(entityName).append("\">\n");
             builder.append("\t\tselect * from ").append(table.getTableName()).append(";\n")
                     .append("\t</select>\n\n");
 
@@ -136,8 +136,7 @@ public class MapperGenerator {
                             FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName())
                                     .substring(1));
                 }
-                builder.append("\" resultType=\"").append(PackageConstant.PACKAGE).append(".pojo.entity.")
-                        .append(entityName).append("\">\n");
+                builder.append("\" resultType=\"").append(entityName).append("\">\n");
                 builder.append("\t\tselect * from ").append(table.getTableName());
                 builder.append("\n\t\twhere ");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
