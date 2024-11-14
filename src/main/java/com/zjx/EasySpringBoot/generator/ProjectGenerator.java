@@ -168,7 +168,7 @@ public class ProjectGenerator {
         File file = new File(PathConstant.PROJECT_ROOT + "pom.xml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             String pomContent = POM_TEMPLATE.formatted(PropertiesReader.getSetting("package.prefix"),
-                    PropertiesReader.getSetting("project.name").toLowerCase());
+                    PropertiesReader.getSetting("project.name"));
             writer.write(pomContent);
             writer.flush();
         } catch (Exception e) {

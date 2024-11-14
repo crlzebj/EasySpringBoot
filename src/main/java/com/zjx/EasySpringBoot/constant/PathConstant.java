@@ -24,7 +24,7 @@ public class PathConstant {
 
     static {
         PROJECT_ROOT = PropertiesReader.getSetting("project.path") +
-                PropertiesReader.getSetting("project.name").toLowerCase() + "/";
+                PropertiesReader.getSetting("project.name") + "/";
         MAIN_JAVA = PROJECT_ROOT + "src/main/java/";
         APPLICATION_ROOT = MAIN_JAVA + PropertiesReader.getSetting("package.prefix").replace(".", "/") +
                 "/" + PropertiesReader.getSetting("project.name").toLowerCase();
