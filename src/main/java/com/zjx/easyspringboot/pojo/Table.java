@@ -1,4 +1,4 @@
-package com.zjx.EasySpringBoot.pojo;
+package com.zjx.easyspringboot.pojo;
 
 import lombok.Data;
 

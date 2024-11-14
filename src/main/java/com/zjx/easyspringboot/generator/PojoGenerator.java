@@ -1,11 +1,11 @@
-package com.zjx.EasySpringBoot.generator;
+package com.zjx.easyspringboot.generator;
 
-import com.zjx.EasySpringBoot.constant.PackageConstant;
-import com.zjx.EasySpringBoot.constant.PathConstant;
-import com.zjx.EasySpringBoot.pojo.Field;
-import com.zjx.EasySpringBoot.pojo.Table;
-import com.zjx.EasySpringBoot.util.FieldToPojoUtil;
-import com.zjx.EasySpringBoot.util.PropertiesReader;
+import com.zjx.easyspringboot.constant.PackageConstant;
+import com.zjx.easyspringboot.constant.PathConstant;
+import com.zjx.easyspringboot.pojo.Field;
+import com.zjx.easyspringboot.pojo.Table;
+import com.zjx.easyspringboot.util.FieldToPojoUtil;
+import com.zjx.easyspringboot.util.PropertiesReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

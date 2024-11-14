@@ -1,4 +1,4 @@
-package com.zjx.EasySpringBoot.util;
+package com.zjx.easyspringboot.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

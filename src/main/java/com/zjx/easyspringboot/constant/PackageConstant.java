@@ -1,6 +1,6 @@
-package com.zjx.EasySpringBoot.constant;
+package com.zjx.easyspringboot.constant;
 
-import com.zjx.EasySpringBoot.util.PropertiesReader;
+import com.zjx.easyspringboot.util.PropertiesReader;
 
 public class PackageConstant {
     public static final String PACKAGE;

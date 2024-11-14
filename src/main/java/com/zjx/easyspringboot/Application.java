@@ -1,8 +1,8 @@
-package com.zjx.EasySpringBoot;
+package com.zjx.easyspringboot;
 
-import com.zjx.EasySpringBoot.generator.*;
-import com.zjx.EasySpringBoot.pojo.Table;
-import com.zjx.EasySpringBoot.util.TablesReader;
+import com.zjx.easyspringboot.generator.*;
+import com.zjx.easyspringboot.pojo.Table;
+import com.zjx.easyspringboot.util.TablesReader;
 
 import java.util.Set;
 

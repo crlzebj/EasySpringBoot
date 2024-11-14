@@ -1,7 +1,7 @@
-package com.zjx.EasySpringBoot.util;
+package com.zjx.easyspringboot.util;
 
-import com.zjx.EasySpringBoot.pojo.Field;
-import com.zjx.EasySpringBoot.pojo.Table;
+import com.zjx.easyspringboot.pojo.Field;
+import com.zjx.easyspringboot.pojo.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

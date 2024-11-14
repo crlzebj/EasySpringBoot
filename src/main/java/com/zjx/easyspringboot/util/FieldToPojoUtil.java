@@ -1,4 +1,4 @@
-package com.zjx.EasySpringBoot.util;
+package com.zjx.easyspringboot.util;
 
 import java.util.HashMap;
 import java.util.Map;
