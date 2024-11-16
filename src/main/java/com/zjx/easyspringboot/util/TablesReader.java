@@ -85,7 +85,7 @@ public class TablesReader {
 
     static {
         try{
-            Class.forName(PropertiesReader.getSetting("db.driver.name"));
+            Class.forName(PropertiesReader.getSetting("db.driver-class-name"));
             Connection connection = DriverManager.getConnection(PropertiesReader.getSetting("db.url"),
                     PropertiesReader.getSetting("db.username"),
                     PropertiesReader.getSetting("db.password"));

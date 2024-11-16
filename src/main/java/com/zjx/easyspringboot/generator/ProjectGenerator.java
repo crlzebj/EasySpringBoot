@@ -71,6 +71,18 @@ public class ProjectGenerator {
                             <version>${mybatis.spring.version}</version>
                         </dependency>
                 
+                        <!-- redis -->
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-data-redis</artifactId>
+                        </dependency>
+                
+                        <!-- 连接池依赖 -->
+                        <dependency>
+                            <groupId>org.apache.commons</groupId>
+                            <artifactId>commons-pool2</artifactId>
+                        </dependency>
+                
                         <!-- springboot -->
                         <dependency>
                             <groupId>org.springframework.boot</groupId>
@@ -97,6 +109,7 @@ public class ProjectGenerator {
                   port: 8080
                 
                 spring:
+                  # 数据源配置
                   datasource:
                     druid:
                       driver-class-name: %s
@@ -104,9 +117,24 @@ public class ProjectGenerator {
                       username: %s
                       password: %s
                 
+                  # redis配置
+                  redis:
+                    host: %s
+                    port: %s
+                    password: %s
+                    database: 0
+                    lettuce:
+                      pool:
+                        max-active: 8
+                        max-idle: 8
+                        min-idle: 0
+                        max-wait: 100
+                
+                # mybatis配置
                 mybatis:
-                  # mapper配置文件
+                  # mapper xml文件
                   mapper-locations: classpath:mapper/*.xml
+                  # pojo包
                   type-aliases-package: %s
                   configuration:
                     # 开启驼峰命名
@@ -133,7 +161,7 @@ public class ProjectGenerator {
      */
     public static void generateDirectory() {
         // 创建pojo目录
-        File file = new File(PathConstant.POJO + "entity/");
+        File file = new File(PathConstant.POJO + "po/");
         file.mkdirs();
         file = new File(PathConstant.POJO + "dto/");
         file.mkdirs();
@@ -182,11 +210,14 @@ public class ProjectGenerator {
     public static void generateYml() {
         File file = new File(PathConstant.MAIN_RESOURCE + "application.yml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            String ymlContent = YML_TEMPLATE.formatted(PropertiesReader.getSetting("db.driver.name"),
+            String ymlContent = YML_TEMPLATE.formatted(PropertiesReader.getSetting("db.driver-class-name"),
                     PropertiesReader.getSetting("db.url"),
                     PropertiesReader.getSetting("db.username"),
                     PropertiesReader.getSetting("db.password"),
-                    PackageConstant.PACKAGE + ".pojo.entity");
+                    PropertiesReader.getSetting("redis.host"),
+                    PropertiesReader.getSetting("redis.port"),
+                    PropertiesReader.getSetting("redis.password"),
+                    PackageConstant.PACKAGE + ".pojo.po");
             writer.write(ymlContent);
             writer.flush();
         } catch (Exception e) {

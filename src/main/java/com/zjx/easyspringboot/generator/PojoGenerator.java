@@ -18,13 +18,13 @@ public class PojoGenerator {
      * 根据表生成对应实体类
      * @param table
      */
-    public static void generateEntity(Table table) {
+    public static void generatePo(Table table) {
         String entityName = FieldToPojoUtil.tableNameToEntityName(table.getTableName());
 
-        File file = new File(PathConstant.POJO + "/entity/", entityName + ".java");
+        File file = new File(PathConstant.POJO + "/po/", entityName + ".java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // 包
-            writer.write("package " + PackageConstant.PACKAGE + ".pojo.entity;");
+            writer.write("package " + PackageConstant.PACKAGE + ".pojo.po;");
             writer.newLine();
             writer.newLine();
 
