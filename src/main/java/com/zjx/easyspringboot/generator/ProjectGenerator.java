@@ -7,13 +7,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+/**
+ * 基础SpringBoot项目生成类
+ */
 public class ProjectGenerator {
     private static final Logger log = LoggerFactory.getLogger(ProjectGenerator.class);
 
     // pom.xml文件模板
     private static final String POM_TEMPLATE;
+    // springboot配置文件模板
     private static final String YML_TEMPLATE;
+    // springboot启动类模板
     private static final String SPRINGBOOT_APPLICATION_TEMPLATE;
 
     static {
@@ -134,7 +142,7 @@ public class ProjectGenerator {
                 mybatis:
                   # mapper xml文件
                   mapper-locations: classpath:mapper/*.xml
-                  # pojo包
+                  # po包
                   type-aliases-package: %s
                   configuration:
                     # 开启驼峰命名
@@ -161,32 +169,62 @@ public class ProjectGenerator {
      */
     public static void generateDirectory() {
         // 创建pojo目录
-        File file = new File(PathConstant.POJO + "po/");
-        file.mkdirs();
-        file = new File(PathConstant.POJO + "dto/");
-        file.mkdirs();
-        file = new File(PathConstant.POJO + "vo/");
-        file.mkdirs();
+        Path poPath = Paths.get(PathConstant.APPLICATION_ROOT, "pojo/po");
+        Path voPath = Paths.get(PathConstant.APPLICATION_ROOT, "pojo/vo");
+        if (!Files.exists(poPath)) {
+            try {
+                Files.createDirectories(poPath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
+        if (!Files.exists(voPath)) {
+            try {
+                Files.createDirectories(voPath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
 
         // 创建mapper目录
-        file = new File(PathConstant.MAPPER_INTERFACE);
-        file.mkdirs();
+        Path mapperPath = Paths.get(PathConstant.APPLICATION_ROOT, "mapper");
+        if (!Files.exists(mapperPath)) {
+            try {
+                Files.createDirectories(mapperPath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
 
         // 创建service目录
-        file = new File(PathConstant.SERVICE + "/impl/");
-        file.mkdirs();
+        Path servicePath = Paths.get(PathConstant.APPLICATION_ROOT, "service/impl");
+        if (!Files.exists(servicePath)) {
+            try {
+                Files.createDirectories(servicePath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
 
         // 创建controller目录
-        file = new File(PathConstant.CONTROLLER);
-        file.mkdirs();
-
-        // 创建resources目录
-        file = new File(PathConstant.MAIN_RESOURCE);
-        file.mkdirs();
+        Path controllerPath = Paths.get(PathConstant.APPLICATION_ROOT, "controller");
+        if (!Files.exists(controllerPath)) {
+            try {
+                Files.createDirectories(controllerPath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
 
         // 创建mapper xml目录
-        file = new File(PathConstant.MAPPER_XML);
-        file.mkdirs();
+        Path mapperxmlPath = Paths.get(PathConstant.MAIN_RESOURCE, "mapper");
+        if (!Files.exists(mapperxmlPath)) {
+            try {
+                Files.createDirectories(mapperxmlPath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -208,7 +246,7 @@ public class ProjectGenerator {
      * 生成SpringBoot配置文件
      */
     public static void generateYml() {
-        File file = new File(PathConstant.MAIN_RESOURCE + "application.yml");
+        File file = new File(PathConstant.MAIN_RESOURCE, "application.yml");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             String ymlContent = YML_TEMPLATE.formatted(PropertiesReader.getSetting("db.driver-class-name"),
                     PropertiesReader.getSetting("db.url"),

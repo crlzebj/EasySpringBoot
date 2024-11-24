@@ -24,28 +24,13 @@ public class FieldToPojoUtil {
      * @param tableName
      * @return
      */
-    public static String tableNameToEntityName(String tableName) {
+    public static String tableNameToPoName(String tableName) {
         String[] splitResult = tableName.split("_");
-        String entityName = "";
+        String poName = "";
         for (String s : splitResult) {
-            entityName += s.substring(0, 1).toUpperCase() + s.substring(1);
+            poName += s.substring(0, 1).toUpperCase() + s.substring(1);
         }
-        return entityName;
-    }
-
-    /**
-     * 将表名转换为 DTO 类名
-     * @param tableName
-     * @return
-     */
-    public static String tableNameToDTOName(String tableName) {
-        String[] splitResult = tableName.split("_");
-        String dtoName = "";
-        for (String s : splitResult) {
-            dtoName += s.substring(0, 1).toUpperCase() + s.substring(1);
-        }
-        dtoName += "QueryDTO";
-        return dtoName;
+        return poName;
     }
 
     /**

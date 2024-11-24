@@ -19,9 +19,9 @@ public class ControllerGenerator {
      * @param table
      */
     public static void generateController(Table table) {
-        String entityName = FieldToPojoUtil.tableNameToEntityName(table.getTableName());
+        String entityName = FieldToPojoUtil.tableNameToPoName(table.getTableName());
 
-        File file = new File(PathConstant.CONTROLLER, entityName + "Controller.java");
+        File file = new File(PathConstant.APPLICATION_ROOT + "/controller", entityName + "Controller.java");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // 包
             writer.write("package " + PackageConstant.PACKAGE + ".controller;\n\n");
@@ -39,7 +39,7 @@ public class ControllerGenerator {
             // 实现类定义
             writer.write("public class " + entityName + "Controller {\n");
 
-            // service接口
+            // 自动注入service接口实例
             writer.write("\t@Autowired\n\tprivate " + entityName + "Service "
                     + entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + "Service;\n");
 

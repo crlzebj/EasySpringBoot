@@ -18,7 +18,7 @@ public class TablesReader {
     private static final String SHOW_FIELDS_SQL = "show full fields from %s;";
     private static final String SHOW_INDEX_SQL = "show index from %s;";
 
-    // 存储所有的表信息
+    // 存储所有表的信息
     private static final Set<Table> tableSet = new HashSet<Table>();
 
     /**

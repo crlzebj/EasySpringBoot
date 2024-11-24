@@ -24,5 +24,6 @@ public class Application {
             ServiceGenerator.generateImpl(table);
             ControllerGenerator.generateController(table);
         }
+        PojoGenerator.generateVo();
     }
 }
