@@ -125,12 +125,12 @@ public class MapperGenerator {
                 }
                 builder.append("\t\t</set>\n\t\twhere ");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
-                    if (fieldIdxCount < indexFields.size() - 1) {
-                       builder.append(" and ");
-                    }
                     builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
                             .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
                             .append("}");
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(" and ");
+                    }
                 }
                 builder.append(";\n\t</update>\n\n");
 
@@ -149,12 +149,12 @@ public class MapperGenerator {
                 builder.append("\t\tdelete from ").append(table.getTableName()).append(" ");
                 builder.append("\n\t\twhere ");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
-                    if (fieldIdxCount < indexFields.size() - 1) {
-                        builder.append(" and ");
-                    }
                     builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
                             .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
                             .append("}");
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(" and ");
+                    }
                 }
                 builder.append(";\n\t</delete>\n\n");
 
@@ -173,12 +173,12 @@ public class MapperGenerator {
                 builder.append("\t\tselect * from ").append(table.getTableName());
                 builder.append("\n\t\twhere ");
                 for (int fieldIdxCount = 0; fieldIdxCount < indexFields.size(); fieldIdxCount++) {
-                    if (fieldIdxCount < indexFields.size() - 1) {
-                        builder.append(" and ");
-                    }
                     builder.append(indexFields.get(fieldIdxCount).getFieldName()).append("=#{")
                             .append(FieldToPojoUtil.fieldNameToJavaName(indexFields.get(fieldIdxCount).getFieldName()))
                             .append("}");
+                    if (fieldIdxCount < indexFields.size() - 1) {
+                        builder.append(" and ");
+                    }
                 }
                 builder.append(";\n\t</select>\n\n");
             }
